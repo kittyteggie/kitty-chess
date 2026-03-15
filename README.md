@@ -8,7 +8,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey)](https://kernel.org/)
 
 </p>
-A lightweight chess game coded completely in Python with Stockfish as a CPU and that saves all your games as [.pgn files](https://en.wikipedia.org/wiki/Portable_Game_Notation).  
+A lightweight chess game coded completely in Python with Stockfish as a CPU and that saves all your games as .pgn files
 
 ---
 ## Dependencies install  
