@@ -63,6 +63,37 @@ moves=[]
 turn="w"
 winner=None
 history=[]
+pgn_saved=False
+
+
+def save_pgn():
+
+    if not os.path.exists("games"):
+        os.makedirs("games")
+
+    now=datetime.datetime.now()
+    date=now.strftime("%Y.%m.%d")
+    filename="games/game_"+now.strftime("%Y%m%d_%H%M%S")+".pgn"
+
+    with open(filename,"w") as f:
+
+        f.write('[Event "Casual Game"]\n')
+        f.write('[Site "Local"]\n')
+        f.write('[Date "'+date+'"]\n')
+        f.write('[White "Player"]\n')
+        f.write('[Black "Stockfish"]\n')
+        f.write('\n')
+
+        moves=[]
+        for i,m in enumerate(history):
+
+            if i%2==0:
+                moves.append(str(i//2+1)+". "+m)
+            else:
+                moves[-1]+=" "+m
+
+        f.write(" ".join(moves))
+
 
 def square(r,c):
     return letters[c]+str(8-r)
@@ -70,39 +101,59 @@ def square(r,c):
 def inside(r,c):
     return 0<=r<8 and 0<=c<8
 
+
 def line_moves(r,c,dirs):
+
     m=[]
+
     for dr,dc in dirs:
+
         nr=r+dr
         nc=c+dc
+
         while inside(nr,nc):
+
             if board[nr][nc]=="":
                 m.append((nr,nc))
+
             else:
+
                 if board[nr][nc][0]!=board[r][c][0]:
                     m.append((nr,nc))
+
                 break
+
             nr+=dr
             nc+=dc
+
     return m
 
+
 def pawn_moves(r,c,color):
+
     m=[]
+
     d=-1 if color=="w" else 1
     start=6 if color=="w" else 1
 
     if inside(r+d,c) and board[r+d][c]=="":
         m.append((r+d,c))
+
         if r==start and board[r+2*d][c]=="":
             m.append((r+2*d,c))
 
     for dc in [-1,1]:
+
         nr=r+d
         nc=c+dc
+
         if inside(nr,nc):
+
             if board[nr][nc]!="" and board[nr][nc][0]!=color:
                 m.append((nr,nc))
+
     return m
+
 
 def get_moves(r,c):
 
@@ -120,10 +171,14 @@ def get_moves(r,c):
         m+=pawn_moves(r,c,color)
 
     if t=="H":
+
         for dr,dc in [(2,1),(2,-1),(-2,1),(-2,-1),(1,2),(1,-2),(-1,2),(-1,-2)]:
+
             nr=r+dr
             nc=c+dc
+
             if inside(nr,nc):
+
                 if board[nr][nc]=="" or board[nr][nc][0]!=color:
                     m.append((nr,nc))
 
@@ -137,23 +192,33 @@ def get_moves(r,c):
         m+=line_moves(r,c,[(1,1),(1,-1),(-1,1),(-1,-1),(1,0),(-1,0),(0,1),(0,-1)])
 
     if t=="K":
+
         for dr in [-1,0,1]:
+
             for dc in [-1,0,1]:
+
                 if dr!=0 or dc!=0:
+
                     nr=r+dr
                     nc=c+dc
+
                     if inside(nr,nc):
+
                         if board[nr][nc]=="" or board[nr][nc][0]!=color:
                             m.append((nr,nc))
 
     return m
 
+
 def find_king(color):
 
     for r in range(8):
+
         for c in range(8):
+
             if board[r][c]==color+"K":
                 return r,c
+
 
 def in_check(color):
 
@@ -162,22 +227,28 @@ def in_check(color):
     enemy="b" if color=="w" else "w"
 
     for r in range(8):
+
         for c in range(8):
+
             if board[r][c]!="" and board[r][c][0]==enemy:
+
                 if (kr,kc) in get_moves(r,c):
                     return True
 
     return False
 
+
 def legal_moves(r,c):
 
     piece=board[r][c]
+
     if piece=="":
         return []
 
     color=piece[0]
 
     m=get_moves(r,c)
+
     good=[]
 
     for nr,nc in m:
@@ -195,14 +266,20 @@ def legal_moves(r,c):
 
     return good
 
+
 def has_moves(color):
 
     for r in range(8):
+
         for c in range(8):
+
             if board[r][c]!="" and board[r][c][0]==color:
+
                 if legal_moves(r,c):
                     return True
+
     return False
+
 
 def get_stockfish_move():
 
@@ -228,15 +305,16 @@ def get_stockfish_move():
 
             return move
 
+
 def move_from_uci(m):
 
     c1=letters.index(m[0])
     r1=8-int(m[1])
-
     c2=letters.index(m[2])
     r2=8-int(m[3])
 
     return r1,c1,r2,c2
+
 
 running=True
 
@@ -259,6 +337,7 @@ while running:
                 piece=board[row][col]
 
                 if piece!="" and piece[0]=="w":
+
                     selected=(row,col)
                     moves=legal_moves(row,col)
 
@@ -295,6 +374,7 @@ while running:
         m=get_stockfish_move()
 
         if m is None:
+
             winner="draw"
 
         else:
@@ -316,7 +396,9 @@ while running:
 
             turn="w"
 
+
     for r in range(8):
+
         for c in range(8):
 
             if (r,c) in moves:
@@ -334,14 +416,20 @@ while running:
             if p!="":
                 screen.blit(pieces[p],(c*TILE+1,r*TILE+1))
 
+
     if winner:
 
         text=font.render(winner,True,(255,0,0))
         rect=text.get_rect(center=(SIZE//2,SIZE//2))
+
         screen.blit(text,rect)
+
+        if not pgn_saved:
+            save_pgn()
+            pgn_saved=True
+
 
     pygame.display.flip()
 
 send("quit")
-
 pygame.quit()
