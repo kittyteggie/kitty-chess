@@ -1,7 +1,7 @@
 # (•ω•) Kitty Chess
 <p align="center">
   
-[![Version 1.1](https://img.shields.io/badge/Version-1.1-green)](https://github.com/kittyteggie/kitty-chess/releases/tag/1.1)
+[![Version 1.1-2](https://img.shields.io/badge/Version-1.1_2-green)](https://github.com/kittyteggie/kitty-chess/releases/tag/1.1-2)
 [![Python](https://img.shields.io/badge/Python-3.12.x-blue)](https://python.org)
 [![Pygame](https://img.shields.io/badge/Pygame-2.6.x-green)](https://www.pygame.org/)
 [![Stockfish](https://img.shields.io/badge/Stockfish-16-orange)](https://stockfishchess.org/)
