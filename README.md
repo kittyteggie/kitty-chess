@@ -1,4 +1,5 @@
 # (•ω•) Kitty Chess
+**NOTE: As of March 28th, 2026 this repository is archived, I'm developing a new chess game called [Checkmate](https://github.com/kittyteggie/checkmate)**
 <p align="center">
   
 [![Version 1.1-2](https://img.shields.io/badge/Version-1.1_2-green)](https://github.com/kittyteggie/kitty-chess/releases/tag/1.1-2)
